@@ -39,6 +39,7 @@ steps:
     templateLocation: 'Linked artifact'
     csmFile: '$(Build.SourcesDirectory)\KeyVault\azuredeploy.json'
     csmParametersFile: '$(Build.SourcesDirectory)\KeyVault\azuredeploy.parameters.json'
+    overrideParameters: '-customData $(CloudInitContent) -Secret $(Secret)'
     deploymentMode: 'Incremental'   
 
 - task: AzureResourceManagerTemplateDeployment@3
@@ -52,5 +53,5 @@ steps:
     templateLocation: 'Linked artifact'
     csmFile: '$(Build.SourcesDirectory)\VmssLinux\azuredeploy.json'
     csmParametersFile: '$(Build.SourcesDirectory)\VmssLinux\azuredeploy.parameters.json'
-    overrideParameters: '-customData $(CloudInitContent) -Secret $(Secret)'
+    overrideParameters: '-customData $(CloudInitContent) -adminPassword $(AdminPass)'
     deploymentMode: 'Incremental'
