@@ -1,47 +1,50 @@
 {
     "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
-    "parameters": {
-        "name": {
-            "type": "String"
-        },
-        "location": {
-            "type": "String"
-        },
-        "sku": {
-            "type": "String"
-        },
-        "accessPolicies": {
-            "type": "Array"
-        },
-        "tenant": {
-            "type": "String"
-        },
-        "enabledForDeployment": {
-            "type": "Bool"
-        },
-        "enabledForTemplateDeployment": {
-            "type": "Bool"
-        },
-        "enabledForDiskEncryption": {
-            "type": "Bool"
-        },
-        "enableRbacAuthorization": {
-            "type": "Bool"
-        },
-        "publicNetworkAccess": {
-            "type": "String"
-        },
-        "enableSoftDelete": {
-            "type": "Bool"
-        },
-        "softDeleteRetentionInDays": {
-            "type": "Int"
-        },
-        "networkAcls": {
-            "type": "Object"
-        }
+  "parameters": {
+    "Secret": {
+      "type": "string"
     },
+    "name": {
+      "type": "String"
+    },
+    "location": {
+      "type": "String"
+    },
+    "sku": {
+      "type": "String"
+    },
+    "accessPolicies": {
+      "type": "Array"
+    },
+    "tenant": {
+      "type": "String"
+    },
+    "enabledForDeployment": {
+      "type": "Bool"
+    },
+    "enabledForTemplateDeployment": {
+      "type": "Bool"
+    },
+    "enabledForDiskEncryption": {
+      "type": "Bool"
+    },
+    "enableRbacAuthorization": {
+      "type": "Bool"
+    },
+    "publicNetworkAccess": {
+      "type": "String"
+    },
+    "enableSoftDelete": {
+      "type": "Bool"
+    },
+    "softDeleteRetentionInDays": {
+      "type": "Int"
+    },
+    "networkAcls": {
+      "type": "Object"
+    }
+  },
     "variables": {},
     "resources": [
         {
