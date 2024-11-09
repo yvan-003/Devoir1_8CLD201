@@ -1,0 +1,220 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "virtualMachineScaleSets_VmssLinux_name": {
+      "defaultValue": "VmssLinux",
+      "type": "String"
+    },
+    "virtualNetworks_RG_Devoir1_vnet_externalid": {
+      "defaultValue": "/subscriptions/d66e11c0-0508-4346-927d-c2ad83ca2752/resourceGroups/RG-Devoir1/providers/Microsoft.Network/virtualNetworks/RG-Devoir1-vnet",
+      "type": "String"
+    },
+    "loadBalancers_LB_VmssLinux_externalid": {
+      "defaultValue": "/subscriptions/d66e11c0-0508-4346-927d-c2ad83ca2752/resourceGroups/RG-Devoir1/providers/Microsoft.Network/loadBalancers/LB-VmssLinux",
+      "type": "String"
+    },
+    "networkSecurityGroups_basicNsgRG_Devoir1_vnet_nic01_externalid": {
+      "defaultValue": "/subscriptions/d66e11c0-0508-4346-927d-c2ad83ca2752/resourceGroups/RG-Devoir1/providers/Microsoft.Network/networkSecurityGroups/basicNsgRG-Devoir1-vnet-nic01",
+      "type": "String"
+    }
+  },
+  "variables": {},
+  "resources": [
+    {
+      "type": "Microsoft.Compute/virtualMachineScaleSets",
+      "apiVersion": "2024-07-01",
+      "name": "[parameters('virtualMachineScaleSets_VmssLinux_name')]",
+      "location": "canadacentral",
+      "sku": {
+        "name": "Standard_D2s_v3",
+        "tier": "Standard",
+        "capacity": 2
+      },
+      "zones": [
+        "1",
+        "2",
+        "3"
+      ],
+      "properties": {
+        "singlePlacementGroup": false,
+        "orchestrationMode": "Flexible",
+        "upgradePolicy": {
+          "mode": "Manual"
+        },
+        "scaleInPolicy": {
+          "rules": [
+            "Default"
+          ],
+          "forceDeletion": false
+        },
+        "virtualMachineProfile": {
+          "osProfile": {
+            "computerNamePrefix": "vmsslinux",
+            "adminUsername": "linuxvmadmin",
+            "linuxConfiguration": {
+              "disablePasswordAuthentication": false,
+              "provisionVMAgent": true,
+              "patchSettings": {
+                "patchMode": "ImageDefault",
+                "assessmentMode": "ImageDefault"
+              }
+            },
+            "secrets": [],
+            "allowExtensionOperations": true,
+            "requireGuestProvisionSignal": true
+          },
+          "storageProfile": {
+            "osDisk": {
+              "osType": "Linux",
+              "createOption": "FromImage",
+              "caching": "ReadWrite",
+              "managedDisk": {
+                "storageAccountType": "StandardSSD_LRS"
+              },
+              "deleteOption": "Delete",
+              "diskSizeGB": 30
+            },
+            "imageReference": {
+              "publisher": "canonical",
+              "offer": "ubuntu-24_04-lts",
+              "sku": "server",
+              "version": "latest"
+            },
+            "diskControllerType": "SCSI"
+          },
+          "networkProfile": {
+            "networkApiVersion": "2020-11-01",
+            "networkInterfaceConfigurations": [
+              {
+                "name": "RG-Devoir1-vnet-nic01",
+                "properties": {
+                  "primary": true,
+                  "enableAcceleratedNetworking": false,
+                  "disableTcpStateTracking": false,
+                  "enableIPForwarding": false,
+                  "auxiliaryMode": "None",
+                  "auxiliarySku": "None",
+                  "deleteOption": "Delete",
+                  "ipConfigurations": [
+                    {
+                      "name": "RG-Devoir1-vnet-nic01-defaultIpConfiguration",
+                      "properties": {
+                        "privateIPAddressVersion": "IPv4",
+                        "subnet": {
+                          "id": "[concat(parameters('virtualNetworks_RG_Devoir1_vnet_externalid'), '/subnets/default')]"
+                        },
+                        "primary": true,
+                        "publicIPAddressConfiguration": {
+                          "name": "publicIp-RG-Devoir1-vnet-nic01",
+                          "properties": {
+                            "idleTimeoutInMinutes": 15,
+                            "ipTags": [],
+                            "publicIPAddressVersion": "IPv4"
+                          }
+                        },
+                        "applicationSecurityGroups": [],
+                        "loadBalancerBackendAddressPools": [
+                          {
+                            "id": "[concat(parameters('loadBalancers_LB_VmssLinux_externalid'), '/backendAddressPools/bepool')]"
+                          }
+                        ],
+                        "applicationGatewayBackendAddressPools": []
+                      }
+                    }
+                  ],
+                  "networkSecurityGroup": {
+                    "id": "[parameters('networkSecurityGroups_basicNsgRG_Devoir1_vnet_nic01_externalid')]"
+                  },
+                  "dnsSettings": {
+                    "dnsServers": []
+                  }
+                }
+              }
+            ]
+          },
+          "extensionProfile": {
+            "extensions": [
+              {
+                "name": "HealthExtension",
+                "properties": {
+                  "autoUpgradeMinorVersion": false,
+                  "publisher": "Microsoft.ManagedServices",
+                  "type": "ApplicationHealthLinux",
+                  "typeHandlerVersion": "1.0",
+                  "settings": {
+                    "protocol": "http",
+                    "port": 80,
+                    "requestPath": "/"
+                  }
+                }
+              }
+            ]
+          },
+          "securityProfile": {
+            "uefiSettings": {
+              "secureBootEnabled": true,
+              "vTpmEnabled": true
+            },
+            "securityType": "TrustedLaunch"
+          }
+        },
+        "additionalCapabilities": {
+          "hibernationEnabled": false
+        },
+        "zoneBalance": false,
+        "platformFaultDomainCount": 1,
+        "automaticRepairsPolicy": {
+          "enabled": false,
+          "gracePeriod": "PT10M",
+          "repairAction": "Replace"
+        },
+        "constrainedMaximumCapacity": false
+      }
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachineScaleSets/extensions",
+      "apiVersion": "2024-07-01",
+      "name": "[concat(parameters('virtualMachineScaleSets_VmssLinux_name'), '/HealthExtension')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Compute/virtualMachineScaleSets', parameters('virtualMachineScaleSets_VmssLinux_name'))]"
+      ],
+      "properties": {
+        "provisioningState": "Succeeded",
+        "autoUpgradeMinorVersion": false,
+        "publisher": "Microsoft.ManagedServices",
+        "type": "ApplicationHealthLinux",
+        "typeHandlerVersion": "1.0",
+        "settings": {
+          "protocol": "http",
+          "port": 80,
+          "requestPath": "/"
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachineScaleSets/virtualMachines",
+      "apiVersion": "2024-07-01",
+      "name": "[concat(parameters('virtualMachineScaleSets_VmssLinux_name'), '/', parameters('virtualMachineScaleSets_VmssLinux_name'), '_05c47c9d')]",
+      "location": "CanadaCentral",
+      "dependsOn": [
+        "[resourceId('Microsoft.Compute/virtualMachineScaleSets', parameters('virtualMachineScaleSets_VmssLinux_name'))]"
+      ],
+      "zones": [
+        "1"
+      ]
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachineScaleSets/virtualMachines",
+      "apiVersion": "2024-07-01",
+      "name": "[concat(parameters('virtualMachineScaleSets_VmssLinux_name'), '/', parameters('virtualMachineScaleSets_VmssLinux_name'), '_fc28c6c2')]",
+      "location": "CanadaCentral",
+      "dependsOn": [
+        "[resourceId('Microsoft.Compute/virtualMachineScaleSets', parameters('virtualMachineScaleSets_VmssLinux_name'))]"
+      ],
+      "zones": [
+        "2"
+      ]
+    }
+  ]
+}

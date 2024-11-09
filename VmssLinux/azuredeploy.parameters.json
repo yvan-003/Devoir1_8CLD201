@@ -1,0 +1,18 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "virtualMachineScaleSets_VmssLinux_name": {
+      "value": null
+    },
+    "virtualNetworks_RG_Devoir1_vnet_externalid": {
+      "value": null
+    },
+    "loadBalancers_LB_VmssLinux_externalid": {
+      "value": null
+    },
+    "networkSecurityGroups_basicNsgRG_Devoir1_vnet_nic01_externalid": {
+      "value": null
+    }
+  }
+}
