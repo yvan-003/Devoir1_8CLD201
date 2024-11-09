@@ -2,8 +2,17 @@
 # Il inclut des étapes personnalisables pour ajouter des builds, tests, déploiements, etc.
 # Documentation supplémentaire : https://aka.ms/yaml
 
-trigger:
-- main  # Déclenchement automatique du pipeline sur chaque modification de la branche principale "main"
+#trigger:
+#- main  # Déclenchement automatique du pipeline sur chaque modification de la branche principale "main"
+
+resources:
+  pipelines:
+    - pipeline: validation
+      source: validation
+      trigger: 
+        branches:
+          include:
+            - main
 
 pool: "default"  # Définit le pool d'agents par défaut pour exécuter les tâches du pipeline
 
