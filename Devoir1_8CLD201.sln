@@ -5,6 +5,8 @@ VisualStudioVersion = 17.11.35327.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{151D2E53-A2C4-4D7D-83FE-D05416EBD58E}") = "KeyVault", "KeyVault\KeyVault.deployproj", "{C02B7652-B3BA-4236-A311-5261B3D5CA39}"
 EndProject
+Project("{151D2E53-A2C4-4D7D-83FE-D05416EBD58E}") = "VmssLinux", "VmssLinux\VmssLinux.deployproj", "{B8AE70D2-78B6-40EB-B460-D0192E07DB8B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{C02B7652-B3BA-4236-A311-5261B3D5CA39}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C02B7652-B3BA-4236-A311-5261B3D5CA39}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C02B7652-B3BA-4236-A311-5261B3D5CA39}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B8AE70D2-78B6-40EB-B460-D0192E07DB8B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B8AE70D2-78B6-40EB-B460-D0192E07DB8B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B8AE70D2-78B6-40EB-B460-D0192E07DB8B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B8AE70D2-78B6-40EB-B460-D0192E07DB8B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
