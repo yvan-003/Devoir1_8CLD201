@@ -34,6 +34,19 @@ steps:
     azureResourceManagerConnection: 'AboDevoir1(d66e11c0-0508-4346-927d-c2ad83ca2752)'
     subscriptionId: 'd66e11c0-0508-4346-927d-c2ad83ca2752'
     action: 'Create Or Update Resource Group'
+    resourceGroupName: 'KeyVault-RG-Devoir1'
+    location: 'Canada Central'
+    templateLocation: 'Linked artifact'
+    csmFile: '$(Build.SourcesDirectory)\KeyVault\azuredeploy.json'
+    csmParametersFile: '$(Build.SourcesDirectory)\KeyVault\azuredeploy.parameters.json'
+    deploymentMode: 'Incremental'   
+
+- task: AzureResourceManagerTemplateDeployment@3
+  inputs:
+    deploymentScope: 'Resource Group'
+    azureResourceManagerConnection: 'AboDevoir1(d66e11c0-0508-4346-927d-c2ad83ca2752)'
+    subscriptionId: 'd66e11c0-0508-4346-927d-c2ad83ca2752'
+    action: 'Create Or Update Resource Group'
     resourceGroupName: 'RG-Devoir1'
     location: 'Canada Central'
     templateLocation: 'Linked artifact'
