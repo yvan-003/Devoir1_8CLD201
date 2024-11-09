@@ -6,8 +6,10 @@
 trigger:
 - main
 
-pool: "default"
+#pool: "default"
 
+pool:
+  vmImage: ubuntu-24.04
 variables:
 - name: CloudInitContent
 
