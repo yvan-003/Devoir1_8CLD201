@@ -58,3 +58,4 @@ steps:
     csmParametersFile: '$(Build.SourcesDirectory)\VmssLinux\azuredeploy.parameters.json'  # Chemin vers le fichier de paramètres pour les VM Linux.
     overrideParameters: '-customData $(CloudInitContent) -adminPassword $(AdminPass)'  # Surcharge les paramètres 'customData' et 'adminPassword' avec les valeurs de pipeline.
     deploymentMode: 'Validation'  # Mode 'Validation' pour vérifier le template ARM sans créer de ressources.
+
