@@ -6,14 +6,35 @@
 trigger:
 - main
 
-pool:
-  vmImage: ubuntu-latest
+pool: "default"
+
+variables:
+- name: CloudInitContent
 
 steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
+- task: PowerShell@2
+  inputs:
+    targetType: 'inline'
+    script: |
+      $CloudContent = Get-Content -Path .\VmssLinux\Cloud-init.txt -Raw
+      Write-Host $CloudContent
+      $encodedContent = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($CloudContent))
+      Write-Host $CloudContent
+      Write-Host "##vso[task.setvariable variable=CloudInitContent;]$encodedContent"
 
 - script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+   echo $(CloudInitContent)
+
+- task: AzureResourceManagerTemplateDeployment@3
+  inputs:
+    deploymentScope: 'Resource Group'
+    azureResourceManagerConnection: 'AboDevoir1(d66e11c0-0508-4346-927d-c2ad83ca2752)'
+    subscriptionId: 'd66e11c0-0508-4346-927d-c2ad83ca2752'
+    action: 'Create Or Update Resource Group'
+    resourceGroupName: 'RG-Devoir1'
+    location: 'Canada Central'
+    templateLocation: 'Linked artifact'
+    csmFile: '$(Build.SourcesDirectory)\VmssLinux\azuredeploy.json'
+    csmParametersFile: '$(Build.SourcesDirectory)\VmssLinux\azuredeploy.parameters.json'
+    overrideParameters: '-customData $(CloudInitContent) -adminPassword $(AdminPass)'
+    deploymentMode: 'Incremental'
