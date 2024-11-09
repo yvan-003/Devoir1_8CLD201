@@ -67,7 +67,23 @@
                 "softDeleteRetentionInDays": "[parameters('softDeleteRetentionInDays')]",
                 "networkAcls": "[parameters('networkAcls')]"
             }
-        }
+        },
+        {
+      "type": "Microsoft.KeyVault/vaults/secrets",
+      "apiVersion": "2024-04-01-preview",
+      "name": "[concat(parameters('name'), '/AdminPass')]",
+      "location": "eastus",
+      "dependsOn": [
+        "[resourceId('Microsoft.KeyVault/vaults', parameters('name'))]"
+      ],
+      "properties": {
+        "contentType": "Administrator Password Use for VM",
+        "attributes": {
+          "enabled": true
+        },
+        "value": "[parameters('Secret')]"
+      }
+    }
     ],
     "outputs": {}
 }
