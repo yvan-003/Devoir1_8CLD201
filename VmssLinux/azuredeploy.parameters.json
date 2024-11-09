@@ -2,17 +2,169 @@
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "virtualMachineScaleSets_VmssLinux_name": {
+    "location": {
+      "value": "canadacentral"
+    },
+    "osDiskType": {
+      "value": "StandardSSD_LRS"
+    },
+    "addressPrefixes": {
+      "value": [
+        "10.1.0.0/16"
+      ]
+    },
+    "subnets": {
+      "value": [
+        {
+          "name": "default",
+          "properties": {
+            "addressPrefix": "10.1.0.0/20"
+          }
+        }
+      ]
+    },
+    "virtualNetworkId": {
+      "value": "/subscriptions/d66e11c0-0508-4346-927d-c2ad83ca2752/resourceGroups/RG-Devoir1/providers/Microsoft.Network/virtualNetworks/RGDevoir1vnet220"
+    },
+    "virtualNetworkName": {
+      "value": "RGDevoir1vnet220"
+    },
+    "networkSecurityGroups": {
+      "value": [
+        {
+          "name": "basicNsgRGDevoir1vnet220-nic01",
+          "id": "/subscriptions/d66e11c0-0508-4346-927d-c2ad83ca2752/resourceGroups/RG-Devoir1/providers/Microsoft.Network/networkSecurityGroups/basicNsgRGDevoir1vnet220-nic01",
+          "rules": [
+            {
+              "name": "Tcp",
+              "properties": {
+                "priority": 300,
+                "protocol": "Tcp",
+                "access": "Allow",
+                "direction": "Inbound",
+                "sourceAddressPrefix": "*",
+                "sourcePortRange": "*",
+                "destinationAddressPrefix": "*",
+                "destinationPortRange": "80"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "networkInterfaceConfigurations": {
+      "value": [
+        {
+          "name": "RGDevoir1vnet220-nic01",
+          "primary": true,
+          "subnetId": "/subscriptions/d66e11c0-0508-4346-927d-c2ad83ca2752/resourceGroups/RG-Devoir1/providers/Microsoft.Network/virtualNetworks/RGDevoir1vnet220/subnets/default",
+          "applicationGatewayBackendAddressPools": [],
+          "loadBalancerBackendAddressPools": [
+            {
+              "id": "[resourceId('Microsoft.Network/loadBalancers/backendAddressPools', parameters('loadBalancerName'), parameters('backendPoolName'))]"
+            }
+          ],
+          "applicationSecurityGroups": [],
+          "loadBalancerInboundNatPools": [],
+          "enableAcceleratedNetworking": false,
+          "nsgName": "basicNsgRGDevoir1vnet220-nic01",
+          "nsgId": "/subscriptions/d66e11c0-0508-4346-927d-c2ad83ca2752/resourceGroups/RG-Devoir1/providers/Microsoft.Network/networkSecurityGroups/basicNsgRGDevoir1vnet220-nic01",
+          "pipName": "publicIp-RGDevoir1vnet220-nic01"
+        }
+      ]
+    },
+    "backendPoolName": {
+      "value": "bepool"
+    },
+    "loadBalancerName": {
+      "value": "LinuxVMS"
+    },
+    "loadbalancingRuleFrontEndPort": {
+      "value": 80
+    },
+    "loadbalancingRuleBackendEndPort": {
+      "value": 80
+    },
+    "loadbalancingRuleProtocol": {
+      "value": "Tcp"
+    },
+    "InboundNATRuleFrontEndPortRangeStart": {
+      "value": 50000
+    },
+    "vmName": {
+      "value": "LinuxVmss"
+    },
+    "virtualMachineScaleSetName": {
+      "value": "LinuxVmss"
+    },
+    "instanceCount": {
+      "value": "2"
+    },
+    "instanceSize": {
+      "value": "Standard_D2s_v3"
+    },
+    "zone": {
+      "value": [
+        "1",
+        "2",
+        "3"
+      ]
+    },
+    "zoneBalance": {
+      "value": "false"
+    },
+    "platformFaultDomainCount": {
+      "value": "1"
+    },
+    "scaleInPolicy": {
+      "value": {
+        "rules": [
+          "Default"
+        ],
+        "forceDeletion": false
+      }
+    },
+    "upgradePolicy": {
+      "value": "Manual"
+    },
+    "hibernationEnabled": {
+      "value": false
+    },
+    "adminUsername": {
+      "value": "linuxvmadmin"
+    },
+    "adminPassword": {
       "value": null
     },
-    "virtualNetworks_RG_Devoir1_vnet_externalid": {
+    "customData": {
       "value": null
     },
-    "loadBalancers_LB_VmssLinux_externalid": {
-      "value": null
+    "securityType": {
+      "value": "TrustedLaunch"
     },
-    "networkSecurityGroups_basicNsgRG_Devoir1_vnet_nic01_externalid": {
-      "value": null
+    "secureBoot": {
+      "value": true
+    },
+    "vTPM": {
+      "value": true
+    },
+    "healthExtensionProtocol": {
+      "value": "http"
+    },
+    "healthExtensionPort": {
+      "value": 80
+    },
+    "healthExtensionRequestPath": {
+      "value": "/"
+    },
+    "autoRepairsPolicyEnabled": {
+      "value": false
+    },
+    "gracePeriod": {
+      "value": "PT10M"
+    },
+    "autoRepairsAction": {
+      "value": "Replace"
     }
   }
 }
