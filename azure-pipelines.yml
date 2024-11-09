@@ -1,54 +1,60 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
+# Ce pipeline démarre avec une configuration de base permettant de compiler et déployer du code.
+# Il inclut des étapes personnalisables pour ajouter des builds, tests, déploiements, etc.
+# Documentation supplémentaire : https://aka.ms/yaml
 
 trigger:
-- main
+- main  # Déclenchement automatique du pipeline sur chaque modification de la branche principale "main"
 
-pool: "default"
+pool: "default"  # Définit le pool d'agents par défaut pour exécuter les tâches du pipeline
 
 variables:
-- name: CloudInitContent
+- name: CloudInitContent  # Déclare une variable nommée "CloudInitContent" pour stocker le contenu encodé en base64
 
 steps:
-- task: PowerShell@2
+- task: PowerShell@2  # Tâche PowerShell intégrée pour exécuter des scripts PowerShell inline
   inputs:
-    targetType: 'inline'
+    targetType: 'inline'  # Définit le type de script comme étant inline
     script: |
+      # Lit le contenu du fichier Cloud-init.txt dans le dossier VmssLinux
       $CloudContent = Get-Content -Path .\VmssLinux\Cloud-init.txt -Raw
-      Write-Host $CloudContent
+      Write-Host $CloudContent  # Affiche le contenu brut pour vérification
+      
+      # Encode le contenu en base64 pour être utilisé dans la configuration des VM
       $encodedContent = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($CloudContent))
-      Write-Host $CloudContent
+      Write-Host $CloudContent  # Affiche le contenu encodé pour vérification
+      
+      # Stocke le contenu encodé dans la variable "CloudInitContent" pour une utilisation ultérieure
       Write-Host "##vso[task.setvariable variable=CloudInitContent;]$encodedContent"
 
 - script: |
-   echo $(CloudInitContent)
+   echo $(CloudInitContent)  # Affiche la valeur de la variable "CloudInitContent" dans la console
 
+# Tâche de déploiement Azure pour déployer des ressources avec un template ARM
 - task: AzureResourceManagerTemplateDeployment@3
   inputs:
-    deploymentScope: 'Resource Group'
-    azureResourceManagerConnection: 'AboDevoir1(d66e11c0-0508-4346-927d-c2ad83ca2752)'
-    subscriptionId: 'd66e11c0-0508-4346-927d-c2ad83ca2752'
-    action: 'Create Or Update Resource Group'
-    resourceGroupName: 'KeyVault-RG-Devoir1'
-    location: 'Canada Central'
-    templateLocation: 'Linked artifact'
-    csmFile: '$(Build.SourcesDirectory)\KeyVault\azuredeploy.json'
-    csmParametersFile: '$(Build.SourcesDirectory)\KeyVault\azuredeploy.parameters.json'
-    overrideParameters: '-Secret $(Secret)'
-    deploymentMode: 'Incremental'   
+    deploymentScope: 'Resource Group'  # Spécifie que le déploiement se fait au niveau du groupe de ressources
+    azureResourceManagerConnection: 'AboDevoir1(d66e11c0-0508-4346-927d-c2ad83ca2752)'  # Connexion Azure
+    subscriptionId: 'd66e11c0-0508-4346-927d-c2ad83ca2752'  # ID de l'abonnement Azure
+    action: 'Create Or Update Resource Group'  # Action pour créer ou mettre à jour le groupe de ressources
+    resourceGroupName: 'KeyVault-RG-Devoir1'  # Nom du groupe de ressources pour ce déploiement
+    location: 'Canada Central'  # Emplacement géographique du déploiement
+    templateLocation: 'Linked artifact'  # Indique que le template ARM est lié au projet
+    csmFile: '$(Build.SourcesDirectory)\KeyVault\azuredeploy.json'  # Chemin vers le fichier de template ARM
+    csmParametersFile: '$(Build.SourcesDirectory)\KeyVault\azuredeploy.parameters.json'  # Chemin vers le fichier de paramètres du template ARM
+    overrideParameters: '-Secret $(Secret)'  # Remplace le paramètre Secret avec la valeur de la variable $(Secret)
+    deploymentMode: 'Incremental'  # Mode de déploiement incrémental (ajoute ou met à jour sans supprimer)
 
+# Deuxième tâche de déploiement Azure pour déployer un autre ensemble de ressources
 - task: AzureResourceManagerTemplateDeployment@3
   inputs:
-    deploymentScope: 'Resource Group'
-    azureResourceManagerConnection: 'AboDevoir1(d66e11c0-0508-4346-927d-c2ad83ca2752)'
-    subscriptionId: 'd66e11c0-0508-4346-927d-c2ad83ca2752'
-    action: 'Create Or Update Resource Group'
-    resourceGroupName: 'RG-Devoir1'
-    location: 'Canada Central'
-    templateLocation: 'Linked artifact'
-    csmFile: '$(Build.SourcesDirectory)\VmssLinux\azuredeploy.json'
-    csmParametersFile: '$(Build.SourcesDirectory)\VmssLinux\azuredeploy.parameters.json'
-    overrideParameters: '-customData $(CloudInitContent) -adminPassword $(AdminPass)'
-    deploymentMode: 'Incremental'
+    deploymentScope: 'Resource Group'  # Niveau du groupe de ressources pour le déploiement
+    azureResourceManagerConnection: 'AboDevoir1(d66e11c0-0508-4346-927d-c2ad83ca2752)'  # Connexion Azure
+    subscriptionId: 'd66e11c0-0508-4346-927d-c2ad83ca2752'  # ID de l'abonnement Azure
+    action: 'Create Or Update Resource Group'  # Crée ou met à jour le groupe de ressources
+    resourceGroupName: 'RG-Devoir1'  # Nom du groupe de ressources pour le déploiement
+    location: 'Canada Central'  # Emplacement pour le déploiement
+    templateLocation: 'Linked artifact'  # Indique que le template ARM est lié
+    csmFile: '$(Build.SourcesDirectory)\VmssLinux\azuredeploy.json'  # Chemin vers le fichier ARM pour la configuration des VM
+    csmParametersFile: '$(Build.SourcesDirectory)\VmssLinux\azuredeploy.parameters.json'  # Chemin vers les paramètres ARM pour la configuration des VM
+    overrideParameters: '-customData $(CloudInitContent) -adminPassword $(AdminPass)'  # Remplace les paramètres customData et adminPassword avec les variables du pipeline
+    deploymentMode: 'Incremental'  # Mode incrémental pour éviter la suppression des ressources existantes
