@@ -14,7 +14,6 @@ resources:
           include:
             - main
 
-
 trigger: none
 
 pool: "default"  # Définit le pool d'agents par défaut pour exécuter les tâches du pipeline
