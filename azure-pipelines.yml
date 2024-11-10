@@ -2,19 +2,16 @@
 # Il inclut des étapes personnalisables pour ajouter des builds, tests, déploiements, etc.
 # Documentation supplémentaire : https://aka.ms/yaml
 
-#trigger:
-#- main  # Déclenchement automatique du pipeline sur chaque modification de la branche principale "main"
-
 resources:
   pipelines:
-    - pipeline: validation
-      source: validation
+    - pipeline: validation # Nom de la référence de pipeline
+      source: validation  # Nom du pipeline de validation dans Azure DevOps
       trigger: 
         branches:
           include:
-            - main
+            - main # Branche à inclure pour le déclenchement
 
-trigger: none
+trigger: none # Désactive le déclenchement automatique de ce pipeline sur des commits directs
 
 pool: "default"  # Définit le pool d'agents par défaut pour exécuter les tâches du pipeline
 
