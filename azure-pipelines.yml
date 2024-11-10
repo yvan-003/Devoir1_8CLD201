@@ -2,6 +2,8 @@
 # Il inclut des étapes personnalisables pour ajouter des builds, tests, déploiements, etc.
 # Documentation supplémentaire : https://aka.ms/yaml
 
+# Ce pipeline s'execute apres la pipeline de validation
+
 resources:
   pipelines:
     - pipeline: validation # Nom de la référence de pipeline
